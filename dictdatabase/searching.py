@@ -33,16 +33,17 @@ def search_key_position_in_db(
     original_value_end = len(file)
     original_key_start = 0
     original_key_end = len(file)
+    tmp = file
     for k in key.split(".") if glom_searching else [key]:
-        key_start, key_end = utils.find_outermost_key_in_json_bytes(file, k)
+        key_start, key_end = utils.find_outermost_key_in_json_bytes(tmp, k)
         if key_end == -1:
             return SearchResult(start_byte=-1, end_byte=-1, found=False)
         original_key_end = original_value_start + key_end
         original_key_start = original_value_start + key_start
-        position = find_key_position_in_bytes(file, k)
+        position = find_key_position_in_bytes(tmp, k)
         original_value_end = original_value_start + original_value_end
         original_value_start += position.start_byte
-        file = file[original_value_start:original_value_end]
+        tmp = file[original_value_start:original_value_end]
     return SearchResult(start_byte=original_key_start, end_byte=original_key_end, found=True)
 
 
